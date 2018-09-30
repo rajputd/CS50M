@@ -38,10 +38,15 @@ function generateToDoItem(id) {
 	checkbox.className = 'todo-checkbox'
 	checkbox.addEventListener('change', updateUncheckedCount)
 
-	let content = document.createTextNode('todo')
+	let deleteButton = document.createElement('button')
+	deleteButton.className = 'todo-delete'
+	deleteButton.addEventListener('click', deleteTodo)
+
+	let content = document.createTextNode('todo ' + id)
 
 	todo.appendChild(checkbox)
 	todo.appendChild(content)
+	todo.appendChild(deleteButton)
 
 	return todo
 }
@@ -52,4 +57,20 @@ function updateUncheckedCount() {
 	} else {
 		uncheckedCountSpan.innerHTML = ++uncheckedCount
 	}
+}
+
+function deleteTodo() {
+	let todo  = this.parentElement
+	let checkbox = todo.firstChild
+
+	//update uncheckedCount
+	if(!checkbox.checked) {
+		uncheckedCountSpan.innerHTML = --uncheckedCount
+	}
+
+	//update itemCount
+	itemCountSpan.innerHTML = --itemCount
+
+	//delete todo
+	todo.remove()
 }
