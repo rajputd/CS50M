@@ -9,6 +9,47 @@ const list = document.getElementById('todo-list')
 const itemCountSpan = document.getElementById('item-count')
 const uncheckedCountSpan = document.getElementById('unchecked-count')
 
+let itemCount = 0
+let uncheckedCount = 0
+let id = 0
+
 function newTodo() {
-  alert('New TODO button clicked!')
+	//update item and unchecked counts
+	itemCountSpan.innerHTML = ++itemCount
+	uncheckedCountSpan.innerHTML = ++uncheckedCount
+
+	//add new todo item to list
+	//list.innerHTML += generateToDoItem(id)
+	list.appendChild(generateToDoItem(id))
+
+	//update id variable to ensure unique ids
+	id++
+}
+
+function generateToDoItem(id) {
+
+	//create todo container
+	let todo = document.createElement('li')
+	todo.id = id
+	todo.className = 'todo-container'
+
+	let checkbox = document.createElement('input')
+	checkbox.type = 'checkbox'
+	checkbox.className = 'todo-checkbox'
+	checkbox.addEventListener('change', updateUncheckedCount)
+
+	let content = document.createTextNode('todo')
+
+	todo.appendChild(checkbox)
+	todo.appendChild(content)
+
+	return todo
+}
+
+function updateUncheckedCount() {
+	if (this.checked) {
+		uncheckedCountSpan.innerHTML = --uncheckedCount
+	} else {
+		uncheckedCountSpan.innerHTML = ++uncheckedCount
+	}
 }
