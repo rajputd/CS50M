@@ -193,21 +193,12 @@ class Timer extends React.Component {
   }
 }
 
-class PomodoroTimer extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.textFont}>Time to work!</Text>
-        <Timer />
-      </View>
-    );
-  }
-}
-
 export default class App extends React.Component {
   render() {
     return (
-        <PomodoroTimer />
+      <View style={styles.container}>
+        <Timer />
+      </View>
     );
   }
 }
