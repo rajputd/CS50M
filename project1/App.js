@@ -100,9 +100,12 @@ class Timer extends React.Component {
   }
 
   timerDone() {
-    //pause timer
-    this.setState({isPaused: true});
-    clearInterval(this.intervalID);
+    //toggle mode
+    this.setState((prevState) => {
+        return { inWorkMode: !prevState.inWorkMode }
+    });
+
+    this.resetTimer();
   }
 
   handleStartPress() {
@@ -118,6 +121,10 @@ class Timer extends React.Component {
   }
 
   handleResetPress() {
+    this.resetTimer();
+  }
+
+  resetTimer() {
     let newState = {};
 
     //pause timer if still running
@@ -136,6 +143,9 @@ class Timer extends React.Component {
   render() {
     return (
       <View>
+        <Text style={styles.textFont}>
+          {this.state.inWorkMode ? 'Time to work!' : 'Time to relax!'}
+        </Text>
         <View style={styles.flexRow}>
           <TimerPicker
            maxValue={99}
