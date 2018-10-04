@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
 import {TimerPicker} from './index';
+import {vibrate} from './../utils';
 
 export default class Timer extends React.Component {
   constructor(props) {
@@ -84,6 +85,8 @@ export default class Timer extends React.Component {
     });
 
     this.resetTimer();
+
+    vibrate();
   }
 
   handleStartPress() {
