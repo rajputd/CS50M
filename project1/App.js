@@ -31,6 +31,8 @@ class Timer extends React.Component {
     this.state = {
       isPaused: true,
       inWorkMode: true,
+      minuteValue: 25,
+      secondValue: 0,
       initialValues: {
         workMode: {
           minute: 25,
@@ -41,12 +43,6 @@ class Timer extends React.Component {
           second: 0,
         },
       },
-      minuteTimer: {
-        currentValue: 25,
-      },
-      secondTimer: {
-        currentValue: 0,
-      }
     }
 
     this.tick = this.tick.bind(this);
@@ -60,61 +56,46 @@ class Timer extends React.Component {
     return this.state.initialValues.breakMode;
   }
 
-  handleTimerChange(newValue, timerName) {
+  handleTimerChange(newValue, timerType) {
     //if timer is running, do nothing
     if (!this.state.isPaused) {
       return;
     }
 
-    //update timer value to that set by user
-    this.setState((prevState) => {
+    let newState = {};
+    newState[timerType + 'Value'] = newValue;
 
-      let newState = {};
-      newState[timerName] = {
-        currentValue: newValue,
-      }
-
-      return newState;
-    });
-
+    this.setState(newState);
   }
 
-  decrementTimer(timerName) {
+  decrementTimer(timerType) {
     //if timer is already at zero, do nothing
-    if(this.state[timerName].currentValue === 0) {
+    if(this.state[timerType + 'Value'] === 0) {
       return;
     }
 
     //decrement timer value by one
     this.setState((prevState) => {
       let newState = {};
-      newState[timerName] = {
-        currentValue: --prevState[timerName].currentValue,
-      }
+      newState[timerType + 'Value'] =  --prevState[timerType + 'Value'];
       return newState;
     });
   }
 
   tick() {
-    const secondValue = this.state.secondTimer.currentValue;
-    const minuteValue = this.state.minuteTimer.currentValue;
+    const secondValue = this.state.secondValue;
+    const minuteValue = this.state.minuteValue;
 
     if (minuteValue === 0 && secondValue === 0) {
       this.timerDone();
     } else if (secondValue === 0) {
-      this.decrementTimer('minuteTimer');
+      this.decrementTimer('minute');
 
       //reset second timer back to maxValue
-      this.setState((prevState) => {
-        return {
-          secondTimer: {
-            currentValue: prevState.secondTimer.maxValue,
-          }
-        }
-      });
+      this.setState({ secondValue: 59 });
 
     } else {
-      this.decrementTimer('secondTimer');
+      this.decrementTimer('second');
     }
   }
 
@@ -127,7 +108,7 @@ class Timer extends React.Component {
   handleStartPress() {
     //set/delete interval based on context
     if (this.state.isPaused) {
-      this.intervalID = setInterval(this.tick,1000);
+      this.intervalID = setInterval(this.tick, 1000);
     } else {
       clearInterval(this.intervalID);
     }
@@ -138,8 +119,6 @@ class Timer extends React.Component {
 
   handleResetPress() {
     let newState = {};
-    const secondTimer = this.state.secondTimer;
-    const minuteTimer = this.state.minuteTimer;
 
     //pause timer if still running
     if (!this.state.isPaused) {
@@ -147,15 +126,9 @@ class Timer extends React.Component {
       clearInterval(this.intervalID);
     }
 
-    //reset seconds to initial value
-    newState['secondTimer'] = {
-      currentValue: this.getCurrentInitialValues().second,
-    };
-
-    //reset minutes to initial value
-    newState['minuteTimer'] = {
-      currentValue: this.getCurrentInitialValues().minute,
-    };
+    //reset timers to initial value
+    newState['secondValue'] = this.getCurrentInitialValues().second;
+    newState['minuteValue'] = this.getCurrentInitialValues().minute;
 
     this.setState(newState);
   }
@@ -166,15 +139,15 @@ class Timer extends React.Component {
         <View style={styles.flexRow}>
           <TimerPicker
            maxValue={99}
-           currentValue={this.state.minuteTimer.currentValue}
-           onValueChange={(itemValue) => {this.handleTimerChange(itemValue, 'minuteTimer')}} />
+           currentValue={this.state.minuteValue}
+           onValueChange={(itemValue) => {this.handleTimerChange(itemValue, 'minute')}} />
 
           <Text style={styles.textFont}> : </Text>
 
           <TimerPicker
            maxValue={59}
-           currentValue={this.state.secondTimer.currentValue}
-           onValueChange={(itemValue) => {this.handleTimerChange(itemValue, 'secondTimer')}} />
+           currentValue={this.state.secondValue}
+           onValueChange={(itemValue) => {this.handleTimerChange(itemValue, 'second')}} />
 
         </View>
         <View>
