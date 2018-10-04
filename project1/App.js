@@ -52,7 +52,7 @@ class Timer extends React.Component {
         let newState = {};
         newState[timerName] = {
           currentValue: newValue,
-          initialValue: newValue,
+          initialValue: prevState[timerName].initialValue,
           maxValue: prevState[timerName].maxValue
         }
 
@@ -116,6 +116,31 @@ class Timer extends React.Component {
     this.setState({isPaused: !this.state.isPaused});
   }
 
+  handleResetPress() {
+    let newState = {};
+    const secondTimer = this.state.secondTimer;
+    const minuteTimer = this.state.minuteTimer;
+
+    if (!this.state.isPaused) {
+      newState['isPaused'] = true;
+      clearInterval(this.intervalID);
+    }
+
+    newState['secondTimer'] = {
+      currentValue: secondTimer.initialValue,
+      initialValue: secondTimer.initialValue,
+      maxValue: secondTimer.maxValue,
+    };
+
+    newState['minuteTimer'] = {
+      currentValue: minuteTimer.initialValue,
+      initialValue: minuteTimer.initialValue,
+      maxValue: minuteTimer.maxValue,
+    };
+
+    this.setState(newState);
+  }
+
   render() {
     return (
       <View>
@@ -135,7 +160,7 @@ class Timer extends React.Component {
         </View>
         <View>
           <Button title={this.state.isPaused ? "Start" : "Pause"} onPress={() => {this.handleStartPress()}}/>
-          <Button title="Reset" onPress={null}/>
+          <Button title="Reset" onPress={() => {this.handleResetPress()}}/>
         </View>
       </View>
     );
