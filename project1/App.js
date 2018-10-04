@@ -43,11 +43,9 @@ class Timer extends React.Component {
       },
       minuteTimer: {
         currentValue: 25,
-        maxValue: 99,
       },
       secondTimer: {
         currentValue: 0,
-        maxValue: 59,
       }
     }
 
@@ -74,7 +72,6 @@ class Timer extends React.Component {
       let newState = {};
       newState[timerName] = {
         currentValue: newValue,
-        maxValue: prevState[timerName].maxValue
       }
 
       return newState;
@@ -93,7 +90,6 @@ class Timer extends React.Component {
       let newState = {};
       newState[timerName] = {
         currentValue: --prevState[timerName].currentValue,
-        maxValue: prevState[timerName].maxValue,
       }
       return newState;
     });
@@ -113,7 +109,6 @@ class Timer extends React.Component {
         return {
           secondTimer: {
             currentValue: prevState.secondTimer.maxValue,
-            maxValue: prevState.secondTimer.maxValue,
           }
         }
       });
@@ -155,13 +150,11 @@ class Timer extends React.Component {
     //reset seconds to initial value
     newState['secondTimer'] = {
       currentValue: this.getCurrentInitialValues().second,
-      maxValue: secondTimer.maxValue,
     };
 
     //reset minutes to initial value
     newState['minuteTimer'] = {
       currentValue: this.getCurrentInitialValues().minute,
-      maxValue: minuteTimer.maxValue,
     };
 
     this.setState(newState);
@@ -172,14 +165,14 @@ class Timer extends React.Component {
       <View>
         <View style={styles.flexRow}>
           <TimerPicker
-           maxValue={this.state.minuteTimer.maxValue}
+           maxValue={99}
            currentValue={this.state.minuteTimer.currentValue}
            onValueChange={(itemValue) => {this.handleTimerChange(itemValue, 'minuteTimer')}} />
 
           <Text style={styles.textFont}> : </Text>
 
           <TimerPicker
-           maxValue={this.state.secondTimer.maxValue}
+           maxValue={59}
            currentValue={this.state.secondTimer.currentValue}
            onValueChange={(itemValue) => {this.handleTimerChange(itemValue, 'secondTimer')}} />
 
