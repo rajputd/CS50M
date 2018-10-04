@@ -30,19 +30,36 @@ class Timer extends React.Component {
 
     this.state = {
       isPaused: true,
+      inWorkMode: true,
+      initialValues: {
+        workMode: {
+          minute: 25,
+          second: 0
+        },
+        breakMode: {
+          minute: 5,
+          second: 0,
+        },
+      },
       minuteTimer: {
-        initialValue: 25,
         currentValue: 25,
         maxValue: 99,
       },
       secondTimer: {
-        initialValue: 0,
         currentValue: 0,
         maxValue: 59,
       }
     }
 
     this.tick = this.tick.bind(this);
+  }
+
+  getCurrentInitialValues() {
+    if (this.state.inWorkMode) {
+      return this.state.initialValues.workMode;
+    }
+
+    return this.state.initialValues.breakMode;
   }
 
   handleTimerChange(newValue, timerName) {
@@ -57,7 +74,6 @@ class Timer extends React.Component {
       let newState = {};
       newState[timerName] = {
         currentValue: newValue,
-        initialValue: prevState[timerName].initialValue,
         maxValue: prevState[timerName].maxValue
       }
 
@@ -77,7 +93,6 @@ class Timer extends React.Component {
       let newState = {};
       newState[timerName] = {
         currentValue: --prevState[timerName].currentValue,
-        initialValue: prevState[timerName].initialValue,
         maxValue: prevState[timerName].maxValue,
       }
       return newState;
@@ -98,7 +113,6 @@ class Timer extends React.Component {
         return {
           secondTimer: {
             currentValue: prevState.secondTimer.maxValue,
-            initialValue: prevState.secondTimer.initialValue,
             maxValue: prevState.secondTimer.maxValue,
           }
         }
@@ -140,15 +154,13 @@ class Timer extends React.Component {
 
     //reset seconds to initial value
     newState['secondTimer'] = {
-      currentValue: secondTimer.initialValue,
-      initialValue: secondTimer.initialValue,
+      currentValue: this.getCurrentInitialValues().second,
       maxValue: secondTimer.maxValue,
     };
 
     //reset minutes to initial value
     newState['minuteTimer'] = {
-      currentValue: minuteTimer.initialValue,
-      initialValue: minuteTimer.initialValue,
+      currentValue: this.getCurrentInitialValues().minute,
       maxValue: minuteTimer.maxValue,
     };
 
