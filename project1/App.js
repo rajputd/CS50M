@@ -41,6 +41,8 @@ class Timer extends React.Component {
         maxValue: 59,
       }
     }
+
+    this.tick = this.tick.bind(this);
   }
 
   handleTimerChange(newValue, timerName) {
@@ -59,7 +61,58 @@ class Timer extends React.Component {
     }
   }
 
+  decrementTimer(timerName) {
+
+    if(this.state[timerName].currentValue === 0) {
+      return;
+    }
+
+    this.setState((prevState) => {
+      let newState = {};
+      newState[timerName] = {
+        currentValue: --prevState[timerName].currentValue,
+        initialValue: prevState[timerName].initialValue,
+        maxValue: prevState[timerName].maxValue,
+      }
+      return newState;
+    });
+  }
+
+  tick() {
+    const secondValue = this.state.secondTimer.currentValue;
+    const minuteValue = this.state.minuteTimer.currentValue;
+
+    if (minuteValue === 0 && secondValue === 0) {
+      //call timer done function
+      this.timerDone();
+    } else if (secondValue === 0) {
+      this.decrementTimer('minuteTimer');
+      this.setState((prevState) => {
+        return {
+          secondTimer: {
+            currentValue: prevState.secondTimer.maxValue,
+            initialValue: prevState.secondTimer.initialValue,
+            maxValue: prevState.secondTimer.maxValue,
+          }
+        }
+      });
+    } else {
+      this.decrementTimer('secondTimer');
+    }
+  }
+
+  timerDone() {
+    this.setState({isPaused: true});
+    clearInterval(this.intervalID);
+  }
+
   handleStartPress() {
+    if (this.state.isPaused) {
+      this.intervalID = setInterval(this.tick,1000);
+    } else {
+      clearInterval(this.intervalID);
+    }
+
     this.setState({isPaused: !this.state.isPaused});
   }
 
