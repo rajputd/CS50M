@@ -102,6 +102,20 @@ export default class Timer extends React.Component {
     this.resetTimer();
   }
 
+  handleSetPress() {
+    let initialValues = this.state.initialValues;
+
+    if (this.state.inWorkMode) {
+      initialValues.workMode.minute = this.state.minuteValue;
+      initialValues.workMode.second = this.state.secondValue;
+    } else {
+      initialValues.breakMode.minute = this.state.minuteValue;
+      initialValues.breakMode.second = this.state.secondValue;
+    }
+
+    this.setState({initialValues: initialValues});
+  }
+
   resetTimer() {
     let newState = {};
 
@@ -141,6 +155,7 @@ export default class Timer extends React.Component {
         <View>
           <Button title={this.state.isPaused ? "Start" : "Pause"} onPress={() => {this.handleStartPress()}}/>
           <Button title="Reset" onPress={() => {this.handleResetPress()}}/>
+          <Button title="Set Timer" onPress={() => {this.handleSetPress()}}/>
         </View>
       </View>
     );
