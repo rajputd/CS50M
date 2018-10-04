@@ -46,27 +46,33 @@ class Timer extends React.Component {
   }
 
   handleTimerChange(newValue, timerName) {
-    if (this.state.isPaused) {
-      this.setState((prevState) => {
-
-        let newState = {};
-        newState[timerName] = {
-          currentValue: newValue,
-          initialValue: prevState[timerName].initialValue,
-          maxValue: prevState[timerName].maxValue
-        }
-
-        return newState;
-      });
+    //if timer is running, do nothing
+    if (!this.state.isPaused) {
+      return;
     }
+
+    //update timer value to that set by user
+    this.setState((prevState) => {
+
+      let newState = {};
+      newState[timerName] = {
+        currentValue: newValue,
+        initialValue: prevState[timerName].initialValue,
+        maxValue: prevState[timerName].maxValue
+      }
+
+      return newState;
+    });
+
   }
 
   decrementTimer(timerName) {
-
+    //if timer is already at zero, do nothing
     if(this.state[timerName].currentValue === 0) {
       return;
     }
 
+    //decrement timer value by one
     this.setState((prevState) => {
       let newState = {};
       newState[timerName] = {
@@ -83,10 +89,11 @@ class Timer extends React.Component {
     const minuteValue = this.state.minuteTimer.currentValue;
 
     if (minuteValue === 0 && secondValue === 0) {
-      //call timer done function
       this.timerDone();
     } else if (secondValue === 0) {
       this.decrementTimer('minuteTimer');
+
+      //reset second timer back to maxValue
       this.setState((prevState) => {
         return {
           secondTimer: {
@@ -96,23 +103,27 @@ class Timer extends React.Component {
           }
         }
       });
+
     } else {
       this.decrementTimer('secondTimer');
     }
   }
 
   timerDone() {
+    //pause timer
     this.setState({isPaused: true});
     clearInterval(this.intervalID);
   }
 
   handleStartPress() {
+    //set/delete interval based on context
     if (this.state.isPaused) {
       this.intervalID = setInterval(this.tick,1000);
     } else {
       clearInterval(this.intervalID);
     }
 
+    //toggle isPaused state
     this.setState({isPaused: !this.state.isPaused});
   }
 
@@ -121,17 +132,20 @@ class Timer extends React.Component {
     const secondTimer = this.state.secondTimer;
     const minuteTimer = this.state.minuteTimer;
 
+    //pause timer if still running
     if (!this.state.isPaused) {
       newState['isPaused'] = true;
       clearInterval(this.intervalID);
     }
 
+    //reset seconds to initial value
     newState['secondTimer'] = {
       currentValue: secondTimer.initialValue,
       initialValue: secondTimer.initialValue,
       maxValue: secondTimer.maxValue,
     };
 
+    //reset minutes to initial value
     newState['minuteTimer'] = {
       currentValue: minuteTimer.initialValue,
       initialValue: minuteTimer.initialValue,
