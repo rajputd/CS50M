@@ -7,12 +7,11 @@ class TimerPicker extends React.Component {
 
     this.state = {
       value: '00',
-      isPaused: true,
     }
   }
 
   handleChange(itemValue, itemIndex) {
-    if (this.state.isPaused) {
+    if (this.props.isPaused) {
       this.setState({value: itemValue});
       return;
     }
@@ -42,16 +41,28 @@ class TimerPicker extends React.Component {
 }
 
 class Timer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isPaused: true,
+    }
+  }
+
+  handleStartPress() {
+    this.setState({isPaused: !this.state.isPaused});
+  }
+
   render() {
     return (
       <View>
         <View style={styles.flexRow}>
-          <TimerPicker timerLength={100} />
+          <TimerPicker timerLength={100} isPaused={this.state.isPaused} />
           <Text style={styles.textFont}> : </Text>
-          <TimerPicker timerLength={60} />
+          <TimerPicker timerLength={60} isPaused={this.state.isPaused} />
         </View>
         <View>
-          <Button title="Start" onPress={null}/>
+          <Button title={this.state.isPaused ? "Start" : "Pause"} onPress={() => {this.handleStartPress()}}/>
           <Button title="Reset" onPress={null}/>
         </View>
       </View>
